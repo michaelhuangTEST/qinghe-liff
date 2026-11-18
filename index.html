@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青禾 LIFF 實測</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>body{font:16px/1.6 sans-serif;padding:16px}div{border-bottom:1px solid #ddd;padding:6px 0}</style>
+</head><body>
+<h3>LIFF × GitHub Pages × Apps Script</h3>
+<section id="o"></section>
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbwnCXoFYzodW1rhhrSlf5ULaYvy1KE5GqCMpMIlm9Hw8zytgdQMO7ejvTwYoFhuKpWz/exec';
+function out(t){ document.getElementById('o').insertAdjacentHTML('beforeend', '<div>' + t + '</div>'); }
+out('頁面：' + location.href.slice(0, 60));
+liff.init({ liffId: '2012685794-xUq0hxyv' }).then(async () => {
+  out('liff.init 成功；在 LINE 內：' + liff.isInClient() + '；已登入：' + liff.isLoggedIn());
+  if (!liff.isLoggedIn()) { out('未登入，轉去 LINE 登入…'); liff.login(); return; }
+  const p = await liff.getProfile();
+  out('LIFF 身分：' + p.displayName + '（ID 前 6 碼 ' + p.userId.slice(0, 6) + '）');
+  const r = await fetch(API + '?action=whoami&idToken=' + encodeURIComponent(liff.getIDToken()));
+  out('後端驗證：' + JSON.stringify(await r.json()));
+}).catch(e => out('錯誤：' + (e.code || '') + ' ' + e.message));
+</script>
+</body></html>
